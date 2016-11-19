@@ -223,6 +223,7 @@ GameObject:
   - 50: {fileID: 50000013390265378}
   - 58: {fileID: 58000012421973654}
   - 61: {fileID: 61000010690854500}
+  - 114: {fileID: 114000014015588396}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -255,6 +256,23 @@ GameObject:
   - 4: {fileID: 4000010884957260}
   m_Layer: 0
   m_Name: Left
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1000013425413310
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 4000012999720510}
+  - 61: {fileID: 61000012589875072}
+  - 114: {fileID: 114000012343855198}
+  m_Layer: 0
+  m_Name: Grounder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -573,6 +591,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4000011318824114}
   m_RootOrder: 0
+--- !u!4 &4000012999720510
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013425413310}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.1618, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 4000013252787550}
+  m_RootOrder: 4
 --- !u!4 &4000013252787550
 Transform:
   m_ObjectHideFlags: 1
@@ -588,6 +619,7 @@ Transform:
   - {fileID: 4000011318824114}
   - {fileID: 4000010492249802}
   - {fileID: 4000010671081886}
+  - {fileID: 4000012999720510}
   m_Father: {fileID: 0}
   m_RootOrder: 0
 --- !u!4 &4000013386976798
@@ -675,7 +707,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!58 &58000012421973654
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -704,6 +736,52 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -0.005}
   serializedVersion: 2
   m_Size: {x: 0.12, y: 0.32}
+--- !u!61 &61000012589875072
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013425413310}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 0.01, y: 0.01}
+--- !u!114 &114000012343855198
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013425413310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef8b09b3ac228c44b15b13bd75a46f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114000014015588396
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012975111866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adbbb9345f79a4b80a2a86b3a2d0d00f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  strength: 200
+  chargeTime: 0
+  chargeTimeIncrement: 3
+  minTheta: 0
+  maxTheta: 6.2831855
+  ascTime: 100
+  fullTime: 20
+  overChargeTime: 40
+  overChargePower: 60
+  grounder: {fileID: 114000012343855198}
 --- !u!212 &212000010533643478
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -26,6 +26,9 @@ public class Player : MonoBehaviour {
 	// The percentile power that it will drop to over the overChargeTime
 	public float overChargePower = 60.0f;
 
+    // Ref to child Grounder instance
+    public Grounder grounder;
+
 	// ---------------------------------------------------------------------------
 	// Public component variables
 	// ---------------------------------------------------------------------------
@@ -97,10 +100,6 @@ public class Player : MonoBehaviour {
 	private Vector2 position(){
 		return new Vector2(transform.position.x, transform.position.y);
 	}
-
-	private bool isGrounded(){
-	}
-
 
 	// ---------------------------------------------------------------------------
 	// Internal functions for some sort of paramaterized computation.
