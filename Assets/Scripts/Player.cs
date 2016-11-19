@@ -48,6 +48,7 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		m_rigidBody = GetComponent<Rigidbody2D>();
+        grounder.isGrounded = true;
 	}
 
 	// Update is called once per frame
