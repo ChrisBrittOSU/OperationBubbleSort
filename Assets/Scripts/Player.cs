@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 	// ---------------------------------------------------------------------------
 
 	// Attributes for determining launch strength
-	public float strength = 500f, chargeTime = 0f, chargeTimeIncrement = 1f;
+	public float strength = 200f, chargeTime = 0f, chargeTimeIncrement = 3f;
 
 	public float minTheta = 0f, maxTheta = 2f	 * Mathf.PI;
 
@@ -26,7 +26,9 @@ public class Player : MonoBehaviour {
 	// The percentile power that it will drop to over the overChargeTime
 	public float overChargePower = 60.0f;
 
-	public float ANGLE;
+	// ---------------------------------------------------------------------------
+	// Public component variables
+	// ---------------------------------------------------------------------------
 
 	// ---------------------------------------------------------------------------
 	// Private variables
@@ -54,10 +56,6 @@ public class Player : MonoBehaviour {
 			charging = false;
 			fire();
 		}
-
-		getAngle(getMousePosition());
-
-		Debug.Log("Angle = "+ANGLE);
 	}
 
 	// Internal
@@ -100,6 +98,9 @@ public class Player : MonoBehaviour {
 		return new Vector2(transform.position.x, transform.position.y);
 	}
 
+	private bool isGrounded(){
+	}
+
 
 	// ---------------------------------------------------------------------------
 	// Internal functions for some sort of paramaterized computation.
@@ -137,7 +138,8 @@ public class Player : MonoBehaviour {
 
 	// Return the angle between this and another object in radians
 	private float getAngle(Vector2 other){
-		ANGLE = Mathf.Deg2Rad * Vector2.Angle(position(), other);
-		return ANGLE;
+		Vector3 relative = transform.InverseTransformPoint(other);
+
+		return Mathf.Atan2(-1*relative.x, relative.y) + 1f * Mathf.PI / 2f;;
 	}
 }
