@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 	// ---------------------------------------------------------------------------
 
 	// Attributes for determining launch strength
-	public float strength = 10f, chargeTime = 0f, chargeTimeIncrement = 1f;
+	public float strength = 500f, chargeTime = 0f, chargeTimeIncrement = 1f;
 
 	public float minTheta = 0f, maxTheta = 2f	 * Mathf.PI;
 
@@ -30,7 +30,7 @@ public class Player : MonoBehaviour {
 	// Private variables
 	// ---------------------------------------------------------------------------
 
-	private RigidBody2D m_rigidBody;
+	private Rigidbody2D m_rigidBody;
 
 	private bool charging = false;
 
@@ -40,7 +40,7 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		m_rigidBody = GetComponent<RigidBody2D>();
+		m_rigidBody = GetComponent<Rigidbody2D>();
 	}
 
 	// Update is called once per frame
@@ -70,8 +70,9 @@ public class Player : MonoBehaviour {
 		float vx, vy;
 		float angle = getAngle(getMousePosition());
 		float speed = getLaunchStrength(chargeTime);
-		vx = Math.Cos(angle) * speed;
-		vy = Math.Sin(angle) * speed;
+		chargeTime = 0;
+		vx = Mathf.Cos(angle) * speed;
+		vy = Mathf.Sin(angle) * speed;
 
 		m_rigidBody.AddForce(new Vector2(vx, vy));
 	}
@@ -84,7 +85,7 @@ public class Player : MonoBehaviour {
 	private Vector2 getMousePosition(){
 		Vector3 v = Input.mousePosition;
 		v = new Vector3(v.x, v.y, 10f);
-		v = Camera.main.ScreenToWorldPosition(v);
+		v = Camera.main.ScreenToWorldPoint(v);
 		return new Vector2(v.x, v.y);
 	}
 
