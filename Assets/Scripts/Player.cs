@@ -131,6 +131,6 @@ public class Player : MonoBehaviour {
 
 	// Return the angle between this and another object in radians
 	private float getAngle(Vector2 other){
-		return Vector2.Angle(position(), other);
+		return Vector2.Angle(position(), other) - Mathf.PI / 2f;
 	}
 }
