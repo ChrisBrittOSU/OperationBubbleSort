@@ -10,10 +10,19 @@ public class Grounder : MonoBehaviour {
         set { bGrounded = value; }
     }
 
+    private bool isGroundTag(Collider2D collider){
+      return collider.tag.Equals("Ground");
+    }
+
     // event triggered upon a 2D collider entering
     private void OnTriggerStay2D(Collider2D other)
     {
-        bGrounded = other.tag.Equals("Ground");
+        bGrounded = isGroundTag(other) ? true : bGrounded;
+    }
+
+    // Event trigged upon leaving the ground
+    private void OnTriggerExit2D(Collider2D other){
+      bGrounded = isGroundTag(other) ? false : bGrounded;
     }
 
 }

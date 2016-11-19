@@ -26,8 +26,16 @@ public class Player : MonoBehaviour {
 	// The percentile power that it will drop to over the overChargeTime
 	public float overChargePower = 60.0f;
 
-    // Ref to child Grounder instance
-    public Grounder grounder;
+	// The speed at which the character gains momentum
+	public float walkSpeed = 5f;
+
+	public float EPSILON = 0.001f;
+
+	public float MOVEMENT_DRAG = 0.05f;
+	public float STILL_DRAG = 0.125f;
+
+  // Ref to child Grounder instance
+  public Grounder grounder;
 
 	// ---------------------------------------------------------------------------
 	// Public component variables
@@ -40,6 +48,8 @@ public class Player : MonoBehaviour {
 	private Rigidbody2D m_rigidBody;
 
 	private bool charging = false;
+
+	private float walking = 0f;
 
 	// ---------------------------------------------------------------------------
 	// Overloaded system functions
@@ -54,11 +64,29 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	// IO
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Space)){
+		if(Input.GetKey(KeyCode.Space) && grounder.isGrounded){
 			charging = true;
-		} else if(Input.GetKeyUp(KeyCode.Space)) {
+		} else if(charging){
 			charging = false;
 			fire();
+		}
+
+		walking = Input.GetAxis("Horizontal");
+		if(walking < 0f){
+			faceLeft();
+		} else if(walking > 0f) {
+			faceRight();
+		}
+
+		if(grounder.isGrounded){
+
+		}
+		else {
+			if(m_rigidBody.velocity.x > 0f){
+				faceRight();
+			} else if(m_rigidBody.velocity.x < 0f){
+				faceLeft();
+			}
 		}
 	}
 
@@ -66,6 +94,15 @@ public class Player : MonoBehaviour {
 	void FixedUpdate() {
 		if(charging){
 			chargeTime += chargeTimeIncrement;
+		}
+
+		if(grounder.isGrounded){
+			if(Mathf.Abs(walking) > EPSILON){
+				m_rigidBody.drag = MOVEMENT_DRAG;
+				m_rigidBody.AddForce(new Vector2(walkSpeed * walking, 0));
+			} else {
+				m_rigidBody.drag = STILL_DRAG;
+			}
 		}
 	}
 
@@ -83,6 +120,14 @@ public class Player : MonoBehaviour {
 		vy = Mathf.Sin(angle) * speed;
 
 		m_rigidBody.AddForce(new Vector2(vx, vy));
+	}
+
+	private void faceLeft(){
+		transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+	}
+
+	private void faceRight(){
+		transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
 	}
 
 	// ---------------------------------------------------------------------------
@@ -140,6 +185,8 @@ public class Player : MonoBehaviour {
 	private float getAngle(Vector2 other){
 		Vector3 relative = transform.InverseTransformPoint(other);
 
-		return Mathf.Atan2(-1*relative.x, relative.y) + 1f * Mathf.PI / 2f;;
+		float sign = transform.localScale.x >= 0f ? -1f : 1f;
+
+		return Mathf.Atan2(sign*relative.x, relative.y) + 1f * Mathf.PI / 2f;;
 	}
 }
