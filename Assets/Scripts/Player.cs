@@ -26,6 +26,8 @@ public class Player : MonoBehaviour {
 	// The percentile power that it will drop to over the overChargeTime
 	public float overChargePower = 60.0f;
 
+	public float ANGLE;
+
 	// ---------------------------------------------------------------------------
 	// Private variables
 	// ---------------------------------------------------------------------------
@@ -52,6 +54,10 @@ public class Player : MonoBehaviour {
 			charging = false;
 			fire();
 		}
+
+		getAngle(getMousePosition());
+
+		Debug.Log("Angle = "+ANGLE);
 	}
 
 	// Internal
@@ -131,6 +137,7 @@ public class Player : MonoBehaviour {
 
 	// Return the angle between this and another object in radians
 	private float getAngle(Vector2 other){
-		return Vector2.Angle(position(), other) - Mathf.PI / 2f;
+		ANGLE = Mathf.Deg2Rad * Vector2.Angle(position(), other);
+		return ANGLE;
 	}
 }
