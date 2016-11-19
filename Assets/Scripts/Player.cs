@@ -3,10 +3,12 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	private RigidBody2D m_rigidBody;
+	// ---------------------------------------------------------------------------
+	// Public variables
+	// ---------------------------------------------------------------------------
 
 	// Attributes for determining launch strength
-	public float strength = 10f, chargeTime = 0f;
+	public float strength = 10f, chargeTime = 0f, chargeTimeIncrement = 1f;
 
 	public float minTheta = 0f, maxTheta = 2f	 * Mathf.PI;
 
@@ -24,6 +26,18 @@ public class Player : MonoBehaviour {
 	// The percentile power that it will drop to over the overChargeTime
 	public float overChargePower = 60.0f;
 
+	// ---------------------------------------------------------------------------
+	// Private variables
+	// ---------------------------------------------------------------------------
+
+	private RigidBody2D m_rigidBody;
+
+	private bool charging = false;
+
+	// ---------------------------------------------------------------------------
+	// Overloaded system functions
+	// ---------------------------------------------------------------------------
+
 	// Use this for initialization
 	void Start () {
 		m_rigidBody = GetComponent<RigidBody2D>();
@@ -32,24 +46,41 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	// IO
 	void Update () {
-
+		if(Input.GetKeyDown(KeyCode.Space)){
+			charging = true;
+		} else if(Input.GetKeyUp(KeyCode.Space)) {
+			charging = false;
+			fire();
+		}
 	}
 
 	// Internal
 	void FixedUpdate() {
-
+		if(charging){
+			chargeTime += chargeTimeIncrement;
+		}
 	}
 
-	void fire(){
+	// ---------------------------------------------------------------------------
+	// High level action functions
+	// ---------------------------------------------------------------------------
+
+	// This function serves to fire the object at the mouse.
+	private void fire(){
 		float vx, vy;
 		float angle = getAngle(getMousePosition());
 		float speed = getLaunchStrength(chargeTime);
 		vx = Math.Cos(angle) * speed;
 		vy = Math.Sin(angle) * speed;
 
-		m_rigidBody.AddVelocity(new Vector2(vx, vy));
+		m_rigidBody.AddForce(new Vector2(vx, vy));
 	}
 
+	// ---------------------------------------------------------------------------
+	// Functions to wrap around the Unity API to give us a more intuitive interface
+	// ---------------------------------------------------------------------------
+
+	// This function returns as a Vector2 the current mouse position.
 	private Vector2 getMousePosition(){
 		Vector3 v = Input.mousePosition;
 		v = new Vector3(v.x, v.y, 10f);
@@ -57,17 +88,18 @@ public class Player : MonoBehaviour {
 		return new Vector2(v.x, v.y);
 	}
 
+	// This function returns the current player's position as a Vector2.
 	private Vector2 position(){
 		return new Vector2(transform.position.x, transform.position.y);
 	}
 
-	// Return the angle between this and another object in radians
-	private float getAngle(Vector2 other){
-		return Vector2.Angle(position(), other);
-	}
+
+	// ---------------------------------------------------------------------------
+	// Internal functions for some sort of paramaterized computation.
+	// ---------------------------------------------------------------------------
 
 	// Returns a float in the [0, 100] range that represents the percentile
-	// launch power that will be used.
+	// launch power that will be used given a _time.
 	private float getLaunchPower(float _time){
 		float __fullTime = ascTime + fullTime;
 		float __overChargeTime = ascTime + fullTime + overChargeTime;
@@ -91,7 +123,13 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	// This function returns the strength adjusted getLaunchPower(_time).
 	private float getLaunchStrength(float _time){
-		return strength * getLaunchPower(_time);
+		return strength * getLaunchPower(_time) / 100f;
+	}
+
+	// Return the angle between this and another object in radians
+	private float getAngle(Vector2 other){
+		return Vector2.Angle(position(), other);
 	}
 }
