@@ -51,9 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1cab8c46183e24482842e3cf87eae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 40
-  y: 40
-  difficulty: 15
+  x: 100
+  y: 100
+  difficulty: 10
   x_offset: 0.66
   y_offset: 0.66
   x_origin: -10
@@ -98,3 +98,4 @@ MonoBehaviour:
   prefabParentPrefab: {fileID: 1000014089791230, guid: c787ea3ec25d9de4eba77d2ff9bcd2cd,
     type: 2}
   prefabParent: {fileID: 0}
+  spawnLocation: {x: 0, y: 0, z: 0}
