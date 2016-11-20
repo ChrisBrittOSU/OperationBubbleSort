@@ -44,9 +44,11 @@ public class Generator : MonoBehaviour {
         {
             player.transform.position = spawnLocation;
             player.GetComponent<Player>().gameOver = false;
+            difficulty = difficulty > 0 ? difficulty - 1 : 0;
         }
         if(player.GetComponent<Player>().askForNewLevel)
         {
+            difficulty += 10;
             InstantiateMap(map);
             player.GetComponent<Player>().askForNewLevel = false;
         }
