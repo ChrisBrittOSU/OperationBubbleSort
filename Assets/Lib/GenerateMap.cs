@@ -6,6 +6,8 @@ namespace Lib{
 		PASSABLE =					0x00000001,
 		SOLID = 						0x00000002,
 		HAZARD =						0x00000004,
+		SPAWN_POINT =				0x00000008,
+		EXIT_POINT =				0x00000010,
 
 		// Solid Modifiers        XX
 		STICKY = 						0x00000100,
@@ -120,8 +122,8 @@ namespace Lib{
 			// Lets do a solid pass for the first time:
 			// We are going to make a solid border around the side
 			// We are going to with a density factor based on the difficulty
-			for(int tx = 0; tx < x; ++tx){
-				for(int ty = 0; ty < y; ++ty){
+			for(int ty = 0; ty < y; ++ty){
+				for(int tx = 0; tx < x; ++tx){
 					if(tx==0||ty==0||tx==x-1||ty==y-1){
 						map[tx,ty] |= TILE_T.SOLID;
 					}
@@ -146,6 +148,32 @@ namespace Lib{
 			removeSoloPlatform();
 
 			fillAlmostFull();
+
+			smoothPlatform(TILE_T.PASSABLE, TILE_T.SOLID);
+			smoothPlatform(TILE_T.SOLID, TILE_T.PASSABLE);
+
+			smoothSides(TILE_T.PASSABLE, TILE_T.SOLID);
+			smoothSides(TILE_T.SOLID, TILE_T.PASSABLE);
+
+			cleanupFlag(TILE_T.PASSABLE);
+			cleanupFlag(TILE_T.SOLID);
+
+			placeSpawnPoint();
+			placeExitPoint();
+
+			if(checkUpperPath()){
+				Debug.Log("We have done checkUpperPath() successfully");
+				if(manageCheckForPath()){
+					Debug.Log("We have gone and successfully verified that we have a valid path. ");
+				} else {
+					Debug.LogError("We do not have a valid path, going to have to try again. ");
+					generate(x, y, difficulty);
+				}
+			} else{
+				Debug.LogError("We need to try again, checkUpperPath() failed");
+				generate(x, y, difficulty);
+			}
+			Debug.Log("Done with generating the map");
 		}
 
 		public void printFile(string filename){
@@ -167,10 +195,14 @@ namespace Lib{
 			using (System.IO.StreamWriter file =
 					new System.IO.StreamWriter(filename, true))
 							{
-								for(int tx = 0; tx < m_x; ++tx){
-									for(int ty = 0; ty < m_y; ++ty){
-										if(checkFlag(tx,ty,TILE_T.SOLID)){
+								for(int ty = 0; ty < m_y; ++ty){
+									for(int tx = 0; tx < m_x; ++tx){
+										if(softCheckFlag(tx,ty,TILE_T.SOLID)){
 											file.Write("X");
+										} else if(checkFlag(tx, ty, TILE_T.SPAWN_POINT)){
+											file.Write("S");
+										} else if(checkFlag(tx, ty, TILE_T.EXIT_POINT)){
+											file.Write("E");
 										} else{
 											file.Write(" ");
 										}
@@ -221,16 +253,171 @@ namespace Lib{
 			}
 		}
 
-		private void smoothPlatform(){
+		private bool checkUpperPath(){
+			for(int tx = 2; tx < m_x - 2; ++tx){
+				bool isOpen = false;
+				for(int ty = 0; ty < m_y; ++ty){
+					isOpen = checkFlag(tx, ty, TILE_T.PASSABLE) ? true : isOpen;
+				}
+				if(!isOpen) return false;
+			}
+			return true;
+		}
+
+		private bool manageCheckForPath(){
+			// Find the spawn point flag.
+			bool spawnFound = false, exitFound = false;
+			for(int tx = 0; tx < m_x; ++tx){
+				for(int ty = 0; ty < m_y; ++ty){
+					if(checkFlag(tx, ty, TILE_T.SPAWN_POINT)){
+						spawnFound = true;
+					} else if(checkFlag(tx, ty, TILE_T.EXIT_POINT)){
+						exitFound = true;
+					}
+				}
+			}
+			if(spawnFound) Debug.Log("Spawn is found");
+			if(exitFound) Debug.Log("Exit is found");
+
+			for(int ty = 4; ty < m_y - 4; ++ty){
+				bool isOpen = false;
+				for(int tx = 4; tx < m_x - 4; ++tx){
+					isOpen = (
+						checkFlag(tx, ty-1, TILE_T.PASSABLE) &&
+						checkFlag(tx, ty, TILE_T.PASSABLE) &&
+						checkFlag(tx, ty+1, TILE_T.PASSABLE)
+					) ? true : isOpen;
+				}
+				if(!isOpen) {
+					Debug.LogError("ty = "+ty);
+					return false;
+				}
+			}
+			// return checkForPath(spawnX, spawnY, array, 0);
+			return spawnFound && exitFound;
+		}
+
+		private bool placeExitPoint(){
+			for(int ty = 2; ty < m_y - 6; ++ty){
+				for(int tx = m_x - 3; tx > 2; --tx){
+					if(countAround(tx, ty, TILE_T.PASSABLE)>=8){
+						map[tx, ty] = TILE_T.EXIT_POINT;
+						map[tx-2, ty+1] = TILE_T.SOLID;
+						map[tx-1, ty+1] = TILE_T.SOLID;
+						map[tx, ty+1] = TILE_T.SOLID;
+						map[tx+1, ty+1] = TILE_T.SOLID;
+						map[tx+2, ty+1] = TILE_T.SOLID;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		private bool placeSpawnPoint(){
+			for(int ty = m_y - 5; ty > 2; --ty){
+				for(int tx = 3; tx < m_x; ++tx){
+					if(countAround(tx, ty, TILE_T.PASSABLE)>=8){
+						map[tx, ty] = TILE_T.SPAWN_POINT;
+						map[tx-2, ty+1] = TILE_T.SOLID;
+						map[tx-1, ty+1] = TILE_T.SOLID;
+						map[tx, ty+1] = TILE_T.SOLID;
+						map[tx+1, ty+1] = TILE_T.SOLID;
+						map[tx+2, ty+1] = TILE_T.SOLID;
+						return false;
+					}
+				}
+			}
+			return false;
+		}
+
+		private void cleanupFlag(TILE_T flag){
+			for(int tx = 0; tx < m_x; ++tx){
+				for(int ty = 0; ty < m_y; ++ty){
+					if(softCheckFlag(tx, ty, flag)){
+						map[tx, ty] = flag;
+					}
+				}
+			}
+		}
+
+		private void smoothPlatform(TILE_T old, TILE_T to){
 			for(int tx = 1; tx < m_x-1; ++tx){
 				for(int ty = 1; ty < m_y-1; ++ty){
-					if(checkFlag(tx,ty,TILE_T.PASSABLE)){
+					if(softCheckFlag(tx,ty,old)){
 						int botCount = 0;
+						int topCount = 0;
+						int sideCount = 0;
 						for(int kx = tx - 1; kx <= tx + 1; ++kx){
 							for(int ky = ty - 1; ky <= ty + 1; ++ky){
 								if(kx == tx && ky == ty){
 									continue;
 								}
+								// Check sides
+								else if(ky == ty){
+									if(softCheckFlag(kx, ky, to)){
+										++sideCount;
+									}
+								}
+								else if(ky == ty - 1){
+									if(softCheckFlag(kx,ky,to)){
+										++topCount;
+									}
+								}
+								else if(ky == ty + 1){
+									if(softCheckFlag(kx,ky,to)){
+										++botCount;
+									}
+								}
+							}
+						}
+
+						// It must be surrounded to be valid
+						if(sideCount==2){
+							if(botCount == 3 || sideCount == 3){
+								map[tx,ty] = to;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private void smoothSides(TILE_T old, TILE_T to){
+			for(int tx = 1; tx < m_x-1; ++tx){
+				for(int ty = 1; ty < m_y-1; ++ty){
+					if(softCheckFlag(tx,ty,old)){
+						int botCount = 0;
+						int topCount = 0;
+						int sideCount = 0;
+						for(int kx = tx - 1; kx <= tx + 1; ++kx){
+							for(int ky = ty - 1; ky <= ty + 1; ++ky){
+								if(kx == tx && ky == ty){
+									continue;
+								}
+								// Check sides
+								else if(kx == tx){
+									if(softCheckFlag(kx, ky, to)){
+										++sideCount;
+									}
+								}
+								else if(kx == tx - 1){
+									if(softCheckFlag(kx,ky,to)){
+										++topCount;
+									}
+								}
+								else if(kx == tx + 1){
+									if(softCheckFlag(kx,ky,to)){
+										++botCount;
+									}
+								}
+							}
+						}
+
+						// It must be surrounded to be valid
+						if(sideCount==2){
+							if(botCount == 3 || sideCount == 3){
+								map[tx,ty] = to;
 							}
 						}
 					}
