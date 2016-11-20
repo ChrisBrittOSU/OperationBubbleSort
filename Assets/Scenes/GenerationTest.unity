@@ -117,9 +117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1cab8c46183e24482842e3cf87eae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 30
-  y: 30
-  difficulty: 10
+  x: 80
+  y: 80
+  difficulty: 25
   x_offset: 0.66
   y_offset: 0.66
   x_origin: -10
