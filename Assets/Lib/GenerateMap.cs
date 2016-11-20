@@ -11,9 +11,11 @@ namespace Lib{
 
 		// Solid Modifiers        XX
 		STICKY = 						0x00000100,
+		SLIPPERY =					0x00000200,
 
 		// Hazard types         XX
-		SPIKE =							0x00010000
+		SPIKE =							0x00010000,
+		SCORE =							0x00020000
 	};
 
 	public class RandomTile{
@@ -53,6 +55,7 @@ namespace Lib{
 
 		private TILE_T[,] map;
 		private int m_x, m_y;
+		private System.Random rgen = new System.Random();
 
 		public TILE_T at(int x, int y){
 			if(x > m_x){
@@ -158,8 +161,13 @@ namespace Lib{
 			cleanupFlag(TILE_T.PASSABLE);
 			cleanupFlag(TILE_T.SOLID);
 
+			placeTraps(difficulty);
+
 			placeSpawnPoint();
 			placeExitPoint();
+
+			cleanupFlag(TILE_T.PASSABLE);
+			cleanupFlag(TILE_T.SOLID);
 
 			if(checkUpperPath()){
 				Debug.Log("We have done checkUpperPath() successfully");
@@ -203,6 +211,8 @@ namespace Lib{
 											file.Write("S");
 										} else if(checkFlag(tx, ty, TILE_T.EXIT_POINT)){
 											file.Write("E");
+										} else if(softCheckFlag(tx, ty, TILE_T.HAZARD)){
+											file.Write("#");
 										} else{
 											file.Write(" ");
 										}
@@ -237,6 +247,38 @@ namespace Lib{
 				for(int ty = 1; ty < m_y-1; ++ty){
 					if(countAround(tx,ty,TILE_T.SOLID)<=1){
 						map[tx,ty] = TILE_T.PASSABLE;
+					}
+				}
+			}
+		}
+
+		private void placeTraps(float difficulty){
+			int kernelSize = 10;
+			for(int kx = 0; kx < m_x / kernelSize - 1; ++kx){
+				for(int ky = 0; ky < m_y / kernelSize - 1; ++ky){
+					if(rgen.Next()%(100) <= difficulty){
+						// We are going to place traps
+						int trapCounter = 0;
+						do {
+							trapCounter += rgen.Next()%50;
+							bool isPlaced = false;
+							for(int k = 0; k < kernelSize * 2 && !isPlaced; ++k){
+								int tx = kx*kernelSize + rgen.Next()%kernelSize;
+								int ty = ky*kernelSize + rgen.Next()%kernelSize;
+								if(checkFlag(tx,ty,TILE_T.PASSABLE)){
+									isPlaced = true;
+									map[tx, ty] = TILE_T.HAZARD;
+									switch(rgen.Next()%1){
+										case 0:
+											map[tx, ty] |= TILE_T.SPIKE;
+											break;
+										default:
+											Debug.LogError("ERROR ~ Trap Selection Escaped");
+											break;
+									}
+								}
+							}
+						}while(trapCounter < difficulty);
 					}
 				}
 			}
@@ -289,7 +331,7 @@ namespace Lib{
 					) ? true : isOpen;
 				}
 				if(!isOpen) {
-					Debug.LogError("ty = "+ty);
+					Debug.LogError("manageCheckForPath(), no veritical route at: ty = "+ty);
 					return false;
 				}
 			}

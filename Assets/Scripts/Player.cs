@@ -94,7 +94,7 @@ public class Player : MonoBehaviour {
         }
     }
 
-	
+
 	// Updates the walking of the player while not bouncing
 	void updateWalking () {
 
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if(grounder.isGrounded){
-            
+
         }
 		else {
 			if(m_rigidBody.velocity.x > 0f){

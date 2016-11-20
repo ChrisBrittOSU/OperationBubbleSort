@@ -5,7 +5,7 @@ using System.Collections;
 public class Generator : MonoBehaviour {
 
     // Map generation variables
-    public int x = 100, y = 100, difficulty = 10;
+    public int x = 100, y = 100, difficulty = 30;
     public float x_offset = 0.66f, y_offset = 0.66f; // offset value of each tile
     public float x_origin = 0f, y_origin = 0f; // origin of tile (0,0)
     public float tileDepth = 0f;
@@ -50,6 +50,27 @@ public class Generator : MonoBehaviour {
                     Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     GameObject tileRef = Instantiate(tilePrefab, position, Quaternion.identity) as GameObject;
                     tileRef.GetComponent<SpriteRenderer>().sprite = tileSprites[spriteIndex];
+
+                    if(map.softCheckFlag(i,j,TILE_T.STICKY)){
+                      // The tile is STICKY
+                    } else if(map.softCheckFlag(i,j,TILE_T.SLIPPERY)){
+                      // The tile is SLIPPERY
+                    }
+                } else if(map.softCheckFlag(i,j,TILE_T.SPAWN_POINT)){
+                  // Do spawn point code here
+                } else if(map.softCheckFlag(i,j,TILE_T.EXIT_POINT)){
+                  // Do exit point code here
+                } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
+                {
+                    // Do general hazard code here
+
+                    if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
+                      // The trap is a spike
+                    }
+
+                    else if(map.softCheckFlag(i,j,TILE_T.SCORE)){
+                      // The trap gives a score
+                    }
                 }
             }
         }
