@@ -381,6 +381,38 @@ namespace Lib{
 			}
 		}
 
+		private void placeCoins(float difficulty){
+			int kernelSize = 10;
+			for(int kx = 0; kx < m_x / kernelSize - 1; ++kx){
+				for(int ky = 0; ky < m_y / kernelSize - 1; ++ky){
+					if(rgen.Next()%(100) >= difficulty){
+						// We are going to place coins
+						int coinCounter = 0;
+						do {
+							coinCounter += rgen.Next()%50;
+							bool isPlaced = false;
+							for(int k = 0; k < kernelSize * 2 && !isPlaced; ++k){
+								int tx = kx*kernelSize + rgen.Next()%kernelSize;
+								int ty = ky*kernelSize + rgen.Next()%kernelSize;
+								if(checkFlag(tx,ty,TILE_T.PASSABLE)){
+									isPlaced = true;
+									map[tx, ty] = TILE_T.HAZARD;
+									switch(rgen.Next()%1){
+										case 0:
+											map[tx, ty] |= TILE_T.SCORE;
+											break;
+										default:
+											Debug.LogError("ERROR ~ Coin Selection Escaped");
+											break;
+									}
+								}
+							}
+						}while(coinCounter < difficulty);
+					}
+				}
+			}
+		}
+
 		private void placeTraps(float difficulty){
 			int kernelSize = 10;
 			for(int kx = 0; kx < m_x / kernelSize - 1; ++kx){
