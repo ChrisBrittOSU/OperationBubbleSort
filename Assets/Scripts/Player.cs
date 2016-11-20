@@ -204,6 +204,10 @@ public class Player : MonoBehaviour {
             isBouncing = false;
         }
         anim.SetBool("isBouncing", isBouncing);
+				if(lowGravity){
+					lowGravity = false;
+					m_rigidBody.gravityScale = LAUNCH_GRAV;
+				}
         // change the physics material to bouncy
         circleCollider2D[0].sharedMaterial = physicsMats[1];
         circleCollider2D[1].sharedMaterial = physicsMats[1];
@@ -333,7 +337,7 @@ public class Player : MonoBehaviour {
 
     // ---------------------------------------------------------------------------
     // Events: Collision with spikes
-    // --------------------------------------------------------------------------- 
+    // ---------------------------------------------------------------------------
     public void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag.Equals("Spike"))
