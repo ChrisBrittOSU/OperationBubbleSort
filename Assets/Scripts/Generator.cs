@@ -60,7 +60,7 @@ public class Generator : MonoBehaviour {
                   // Do spawn point code here
                 } else if(map.softCheckFlag(i,j,TILE_T.EXIT_POINT)){
                   // Do exit point code here
-                } else if(map.softCheckFlag(i,j,TILE_T.SOLID) )
+                } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
                 {
                     // Do general hazard code here
 
