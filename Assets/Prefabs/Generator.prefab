@@ -98,3 +98,5 @@ MonoBehaviour:
   prefabParentPrefab: {fileID: 1000014089791230, guid: c787ea3ec25d9de4eba77d2ff9bcd2cd,
     type: 2}
   prefabParent: {fileID: 0}
+  spawnLocation: {x: 0, y: 0, z: 0}
+  scoreText: {fileID: 0}

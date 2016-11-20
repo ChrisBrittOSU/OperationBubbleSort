@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Lib;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Generator : MonoBehaviour {
@@ -30,6 +31,9 @@ public class Generator : MonoBehaviour {
     public Transform prefabParent;
     public Vector3 spawnLocation;
 
+    // text for score display
+    public Text scoreText;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -50,6 +54,7 @@ public class Generator : MonoBehaviour {
             InstantiateMap(map);
             player.GetComponent<Player>().askForNewLevel = false;
         }
+        scoreText.text = "Score: " + (difficulty - 10);
 	}
 
     // Goes through each element in the map matrix and instantiates the gameObjects
