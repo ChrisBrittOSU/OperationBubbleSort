@@ -37,13 +37,13 @@ public class Generator : MonoBehaviour {
     // Goes through each element in the map matrix and instantiates the gameObjects
     public void InstantiateMap(Map map)
     {
-        // iterate through the matrix
+        // iterate through the matrix, i = y coord j = x coord
         for(int i = 0; i < map.maxX(); i++)
         {
             for(int j = 0; j < map.maxY(); j++)
             {
                 // if the element at (i,j) is a tile, find its correct sprite and instantiate it
-                if(map.at(i,j) == TILE_T.SOLID)
+                if(map.softCheckFlag(i,j,TILE_T.SOLID) )
                 {
                     // returns 0 for now
                     int spriteIndex = FindCorrectTileSprite(i, j);
