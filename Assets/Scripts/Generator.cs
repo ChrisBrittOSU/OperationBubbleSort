@@ -28,6 +28,7 @@ public class Generator : MonoBehaviour {
     // parent transform for all instantiated objects
     public GameObject prefabParentPrefab;
     public Transform prefabParent;
+    public Vector3 spawnLocation;
 
 	// Use this for initialization
 	void Start ()
@@ -39,7 +40,16 @@ public class Generator : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-
+        if(player.GetComponent<Player>().gameOver)
+        {
+            player.transform.position = spawnLocation;
+            player.GetComponent<Player>().gameOver = false;
+        }
+        if(player.GetComponent<Player>().askForNewLevel)
+        {
+            InstantiateMap(map);
+            player.GetComponent<Player>().askForNewLevel = false;
+        }
 	}
 
     // Goes through each element in the map matrix and instantiates the gameObjects
@@ -73,7 +83,7 @@ public class Generator : MonoBehaviour {
                         tileSprite.material = tileMaterials[defaultMat];
                     }
                 } else if(map.softCheckFlag(i,j,TILE_T.SPAWN_POINT)){
-                    GameObject tileRef = CreateNewTile(spawnPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
+                    CreateNewTile(spawnPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     // if we have a reference to a player object, destory it and make a new one
                     if(player != null)
                     {
@@ -81,13 +91,14 @@ public class Generator : MonoBehaviour {
                     }
                     Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, map.maxY() - j, playerDepth);
                     player = Instantiate(playerPrefab, position, Quaternion.identity) as GameObject;
+                    spawnLocation = position;
                 } else if(map.softCheckFlag(i,j,TILE_T.EXIT_POINT)){
-                    GameObject tileRef = CreateNewTile(exitPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
+                    CreateNewTile(exitPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                 } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
                 {
                     // Do general hazard code here
                     if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
-                        GameObject tileRef = CreateNewTile(spikePrefab, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
+                        CreateNewTile(spikePrefab, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     }
 
                     else if(map.softCheckFlag(i,j,TILE_T.SCORE)){

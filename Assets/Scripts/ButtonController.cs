@@ -10,9 +10,6 @@ public class ButtonController : MonoBehaviour {
     // Generator reference
     public Generator generator;
 
-    // UI anim
-    public Animator uiAnim;
-
     void Update()
     {
         if(Input.GetKeyDown(KeyCode.Escape))
@@ -34,7 +31,6 @@ public class ButtonController : MonoBehaviour {
 	public void StartPress()
     {
         generator.Generate();
-        uiAnim.SetInteger("state", 1);
     }
 
     // Exit button functio upon pressed
@@ -42,4 +38,5 @@ public class ButtonController : MonoBehaviour {
     {
         Application.Quit();
     }
+
 }
