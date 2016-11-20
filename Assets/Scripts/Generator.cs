@@ -67,6 +67,10 @@ public class Generator : MonoBehaviour {
                     if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
                       // The trap is a spike
                     }
+
+                    else if(map.softCheckFlag(i,j,TILE_T.SCORE)){
+                      // The trap gives a score
+                    }
                 }
             }
         }

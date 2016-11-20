@@ -14,7 +14,8 @@ namespace Lib{
 		SLIPPERY =					0x00000200,
 
 		// Hazard types         XX
-		SPIKE =							0x00010000
+		SPIKE =							0x00010000,
+		SCORE =							0x00020000
 	};
 
 	public class RandomTile{
