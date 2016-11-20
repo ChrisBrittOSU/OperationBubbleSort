@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
     public float minVel = -20f, maxVel = 20f;
 
     // Properties to determine bounciness of collions
-    public CircleCollider2D circleCollider2D;
+    public CircleCollider2D[] circleCollider2D;
     public PhysicsMaterial2D[] physicsMats;
 
 	/// Attributes for the launch curve
@@ -60,8 +60,8 @@ public class Player : MonoBehaviour {
     // Animator of the UI
     public Animator uiAnim;
 
-  // Ref to child Grounder instance
-  public Grounder grounder;
+    // Ref to child Grounder instance
+    public Grounder grounder;
 
 	// ---------------------------------------------------------------------------
 	// Public component variables
@@ -164,9 +164,10 @@ public class Player : MonoBehaviour {
 	void updatePhysics(float dt) {
 
         // change the physics material to normal
-        circleCollider2D.sharedMaterial = physicsMats[0];
+        circleCollider2D[0].sharedMaterial = physicsMats[0];
+        circleCollider2D[1].sharedMaterial = physicsMats[0];
 
-		if(charging){
+        if (charging){
 			chargeTime += grounder.isGrounded ? dt : dt / 2f;
 		}
 
@@ -204,7 +205,8 @@ public class Player : MonoBehaviour {
         }
         anim.SetBool("isBouncing", isBouncing);
         // change the physics material to bouncy
-        circleCollider2D.sharedMaterial = physicsMats[1];
+        circleCollider2D[0].sharedMaterial = physicsMats[1];
+        circleCollider2D[1].sharedMaterial = physicsMats[1];
     }
 
 	// ---------------------------------------------------------------------------

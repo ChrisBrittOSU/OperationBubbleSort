@@ -92,7 +92,7 @@ MonoBehaviour:
     type: 2}
   spawnPoint: {fileID: 1000010442291610, guid: f69441ed416d28847b01e4afbc448945, type: 2}
   exitPoint: {fileID: 1000010787673320, guid: 35067ed14c7254f4cb75bd6e2557cf8b, type: 2}
-  playerPrefab: {fileID: 1000012975111866, guid: d3f25264d7d869643b1cfed55f93300c,
+  playerPrefab: {fileID: 1000012121663528, guid: d3f25264d7d869643b1cfed55f93300c,
     type: 2}
   player: {fileID: 0}
   prefabParentPrefab: {fileID: 1000014089791230, guid: c787ea3ec25d9de4eba77d2ff9bcd2cd,
