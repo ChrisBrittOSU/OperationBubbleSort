@@ -2,30 +2,36 @@
 using System.Collections;
 
 public class SoundBoard : MonoBehaviour {
-    public AudioSource bounce, pop, button, victory, walk;
+    public AudioSource board;
+    public AudioClip bounce, pop, button, victory, walk;
 	
     public void playBounce()
     {
-        bounce.Play();
+        board.clip = bounce;
+        board.Play();
     }
 
     public void playPop()
     {
-        pop.Play();
+        board.clip = pop;
+        board.Play();
     }
 
     public void playButton()
     {
-        button.Play();
+        board.clip = button;
+        board.Play();
     }
     
     public void playVictory()
     {
-        victory.Play();
+        board.clip = victory;
+        board.Play();
     }
 
     public void playWalk()
     {
-        walk.Play();
+        board.clip = walk;
+        board.Play();
     }
 }
