@@ -11,8 +11,10 @@ public class Generator : MonoBehaviour {
     public float tileDepth = 0f;
     // reference to the map instance created
     public Map map;
-    // array of sprites for tiles
+    // array of sprites/materials for tiles
     public Sprite[] tileSprites;
+    public Material[] tileMaterials;
+    public PhysicsMaterial2D[] tilePhysicsMaterials;
     // Prefab of tile gameObject
     public GameObject tilePrefab;
     public GameObject spikePrefab;
@@ -55,6 +57,7 @@ public class Generator : MonoBehaviour {
     // Goes through each element in the map matrix and instantiates the gameObjects
     public void InstantiateMap(Map map)
     {
+        int defaultMat = Random.Range(0, 3);
         // iterate through the matrix, i = y coord j = x coord
         for(int i = 0; i < map.maxX(); ++i)
         {
@@ -64,14 +67,22 @@ public class Generator : MonoBehaviour {
                 if(map.softCheckFlag(i,j,TILE_T.SOLID) )
                 {
                     // returns 0 for now
-                    int spriteIndex = FindCorrectTileSprite(i, j);
+                    int spriteIndex = (int)map.getFace(i, j);
                     GameObject tileRef = CreateNewTile(tilePrefab, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
-                    tileRef.GetComponent<SpriteRenderer>().sprite = tileSprites[spriteIndex];
+                    SpriteRenderer tileSprite = tileRef.GetComponent<SpriteRenderer>();
+                    tileSprite.sprite = tileSprites[spriteIndex];
 
                     if(map.softCheckFlag(i,j,TILE_T.STICKY)){
-                      // The tile is STICKY
+                        tileRef.GetComponent<BoxCollider2D>().sharedMaterial = tilePhysicsMaterials[0];
+                        tileSprite.material = tileMaterials[3];
                     } else if(map.softCheckFlag(i,j,TILE_T.SLIPPERY)){
-                      // The tile is SLIPPERY
+                        tileRef.GetComponent<BoxCollider2D>().sharedMaterial = tilePhysicsMaterials[1];
+                        tileSprite.material = tileMaterials[4];
+                    }
+                    else
+                    {
+                        tileRef.GetComponent<BoxCollider2D>().sharedMaterial = tilePhysicsMaterials[2];
+                        tileSprite.material = tileMaterials[defaultMat];
                     }
                 } else if(map.softCheckFlag(i,j,TILE_T.SPAWN_POINT)){
                     GameObject tileRef = CreateNewTile(spawnPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
@@ -97,12 +108,6 @@ public class Generator : MonoBehaviour {
     {
         Vector3 position = MatrixToWorldSpace(xOrg,yOrg,xOffset,yOffset,x,map.maxY() - y,z);
         return Instantiate(prefab, position, Quaternion.identity, prefabParent) as GameObject;
-    }
-
-    // Find the correct sprite for a tile
-    public int FindCorrectTileSprite(int x, int y)
-    {
-        return 0;
     }
 
     // Returns the vector3 position of a give tile in the matrix

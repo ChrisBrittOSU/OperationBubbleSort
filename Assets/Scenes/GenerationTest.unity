@@ -117,8 +117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1cab8c46183e24482842e3cf87eae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 30
-  y: 30
+  x: 100
+  y: 100
   difficulty: 70
   x_offset: 0.66
   y_offset: 0.66
@@ -127,6 +127,31 @@ MonoBehaviour:
   tileDepth: 0
   tileSprites:
   - {fileID: 21300000, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300002, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300004, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300006, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300008, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300010, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300012, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300014, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300016, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300018, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300020, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300022, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300024, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300026, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300028, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  - {fileID: 21300030, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
+  tileMaterials:
+  - {fileID: 2100000, guid: d0e00441c6b56f84b9e94ba36363c05d, type: 2}
+  - {fileID: 2100000, guid: 0b4f334132b6bb842ab0b31db229cca4, type: 2}
+  - {fileID: 2100000, guid: 147e13d8e920ae2418cc4f0433bcd88c, type: 2}
+  - {fileID: 2100000, guid: 37d284d0e87f79246a16b70f09c0584f, type: 2}
+  - {fileID: 2100000, guid: b8fc36552822d3047868a0d3d923b7e1, type: 2}
+  tilePhysicsMaterials:
+  - {fileID: 6200000, guid: dceef10bc55f2264dbcf970630c89ef9, type: 2}
+  - {fileID: 6200000, guid: 4d2a893ae587321409b933770ecdf583, type: 2}
+  - {fileID: 6200000, guid: 57161c99dec953d4185ce88b2bb5ec56, type: 2}
   tilePrefab: {fileID: 1000012134263618, guid: 4708a531f4fbfc5489a7cbbe8fac42b8, type: 2}
   spikePrefab: {fileID: 1000014111550672, guid: be21fd7a576ba5a46adb5e89ece200bc,
     type: 2}
