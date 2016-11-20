@@ -16,6 +16,12 @@ public class Generator : MonoBehaviour {
     // Prefab of tile gameObject
     public GameObject tilePrefab;
     public GameObject spikePrefab;
+    public GameObject spawnPoint;
+    public GameObject exitPoint;
+
+    // parent transform for all instantiated objects
+    public GameObject prefabParentPrefab;
+    public Transform prefabParent;
 
 	// Use this for initialization
 	void Start ()
@@ -30,7 +36,13 @@ public class Generator : MonoBehaviour {
         // If space bar is pressed, generate a new map
 	    if(Input.GetKeyDown(KeyCode.Space))
         {
+            if(prefabParent != null)
+            {
+                Destroy(prefabParent.gameObject);
+            }
             map.generate(x,y,difficulty);
+            GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
+            prefabParent = refOfPrefabParent.transform;
             InstantiateMap(map);
         }
 	}
@@ -39,17 +51,16 @@ public class Generator : MonoBehaviour {
     public void InstantiateMap(Map map)
     {
         // iterate through the matrix, i = y coord j = x coord
-        for(int i = 0; i < map.maxX(); i++)
+        for(int i = 0; i < map.maxX(); ++i)
         {
-            for(int j = 0; j < map.maxY(); j++)
+            for(int j = 0; j < map.maxY(); ++j)
             {
                 // if the element at (i,j) is a tile, find its correct sprite and instantiate it
                 if(map.softCheckFlag(i,j,TILE_T.SOLID) )
                 {
                     // returns 0 for now
                     int spriteIndex = FindCorrectTileSprite(i, j);
-                    Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
-                    GameObject tileRef = Instantiate(tilePrefab, position, Quaternion.identity) as GameObject;
+                    GameObject tileRef = CreateNewTile(tilePrefab, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     tileRef.GetComponent<SpriteRenderer>().sprite = tileSprites[spriteIndex];
 
                     if(map.softCheckFlag(i,j,TILE_T.STICKY)){
@@ -58,16 +69,15 @@ public class Generator : MonoBehaviour {
                       // The tile is SLIPPERY
                     }
                 } else if(map.softCheckFlag(i,j,TILE_T.SPAWN_POINT)){
-                  // Do spawn point code here
+                    GameObject tileRef = CreateNewTile(spawnPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                 } else if(map.softCheckFlag(i,j,TILE_T.EXIT_POINT)){
-                  // Do exit point code here
+                    GameObject tileRef = CreateNewTile(exitPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                 } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
                 {
                     // Do general hazard code here
 
                     if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
-                        Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
-                        GameObject tileRef = Instantiate(spikePrefab, position, Quaternion.identity) as GameObject;
+                        GameObject tileRef = CreateNewTile(spikePrefab, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     }
 
                     else if(map.softCheckFlag(i,j,TILE_T.SCORE)){
@@ -76,6 +86,13 @@ public class Generator : MonoBehaviour {
                 }
             }
         }
+    }
+
+    // creates a give tile prefab and returns a reference to it;
+    public GameObject CreateNewTile(GameObject prefab, float xOrg, float yOrg, float xOffset, float yOffset, int x, int y, float z)
+    {
+        Vector3 position = MatrixToWorldSpace(xOrg,yOrg,xOffset,yOffset,x,map.maxY() - y,z);
+        return Instantiate(prefab, position, Quaternion.identity, prefabParent) as GameObject;
     }
 
     // Find the correct sprite for a tile
