@@ -36,17 +36,18 @@ public class Generator : MonoBehaviour {
         // If space bar is pressed, generate a new map
 	    if(Input.GetKeyDown(KeyCode.Space))
         {
+            // If we have a reference here, then we must destroy it
             if(prefabParent != null)
             {
                 Destroy(prefabParent.gameObject);
             }
+            // generate a new matrix
             map.generate(x,y,difficulty);
-<<<<<<< HEAD
+            // create a new parent object and create a temporary reference
             GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
+            // create a permanent reference to this parent transform
             prefabParent = refOfPrefabParent.transform;
-=======
             map.printFile("Grid.txt");
->>>>>>> origin/dev
             InstantiateMap(map);
         }
 	}
