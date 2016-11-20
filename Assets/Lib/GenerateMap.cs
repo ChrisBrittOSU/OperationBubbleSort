@@ -2,6 +2,7 @@
 using System.Collections;
 namespace Lib{
 	public enum TILE_T : int{
+		NULL = 							0x00000000,
 		// General types            XX
 		PASSABLE =					0x00000001,
 		SOLID = 						0x00000002,
@@ -47,7 +48,7 @@ namespace Lib{
 	}
 
 	public class Map{
-		public Map(int x, int y, int difficulty){
+		public Map(int x, int y, float difficulty){
 			m_x = x;
 			m_y = y;
 			generate(x,y,difficulty);
@@ -158,6 +159,12 @@ namespace Lib{
 			smoothSides(TILE_T.PASSABLE, TILE_T.SOLID);
 			smoothSides(TILE_T.SOLID, TILE_T.PASSABLE);
 
+			smoothPlatform(TILE_T.PASSABLE, TILE_T.SOLID);
+			smoothPlatform(TILE_T.SOLID, TILE_T.PASSABLE);
+
+			smoothSides(TILE_T.PASSABLE, TILE_T.SOLID);
+			smoothSides(TILE_T.SOLID, TILE_T.PASSABLE);
+
 			cleanupFlag(TILE_T.PASSABLE);
 			cleanupFlag(TILE_T.SOLID);
 
@@ -166,8 +173,9 @@ namespace Lib{
 			placeSpawnPoint();
 			placeExitPoint();
 
-			cleanupFlag(TILE_T.PASSABLE);
-			cleanupFlag(TILE_T.SOLID);
+			seedSolid(difficulty);
+			splatterSolid(difficulty);
+
 
 			if(checkUpperPath()){
 				Debug.Log("We have done checkUpperPath() successfully");
@@ -206,7 +214,13 @@ namespace Lib{
 								for(int ty = 0; ty < m_y; ++ty){
 									for(int tx = 0; tx < m_x; ++tx){
 										if(softCheckFlag(tx,ty,TILE_T.SOLID)){
-											file.Write("X");
+											if(softCheckFlag(tx,ty,TILE_T.STICKY)){
+												file.Write("W");
+											} else if(softCheckFlag(tx,ty,TILE_T.SLIPPERY)){
+												file.Write("O");
+											} else {
+												file.Write("X");
+											}
 										} else if(checkFlag(tx, ty, TILE_T.SPAWN_POINT)){
 											file.Write("S");
 										} else if(checkFlag(tx, ty, TILE_T.EXIT_POINT)){
@@ -249,6 +263,61 @@ namespace Lib{
 						map[tx,ty] = TILE_T.PASSABLE;
 					}
 				}
+			}
+		}
+
+		private void seedSolid(float difficulty){
+			int count = (int)(difficulty * Mathf.Log(difficulty, 2));
+			for(int k = 0; k < count; ++k){
+				int tx = rgen.Next()%(m_x-2) + 1;
+				int ty = rgen.Next()%(m_y-2) + 1;
+				if(checkFlag(tx, ty, TILE_T.SOLID)){
+					switch(rgen.Next()%2){
+						case 0:
+							map[tx, ty] |= TILE_T.STICKY;
+							break;
+						case 1:
+							map[tx, ty] |= TILE_T.SLIPPERY;
+							break;
+						default:
+							Debug.LogError("seedSolid() escaped its switch");
+							break;
+					}
+				}
+			}
+		}
+
+		private void splatterSolid(float difficulty){
+			int rate = 0;
+			int pass = 1;
+			if(difficulty >= 25f){
+				do{
+					rate += rgen.Next()%70;
+					TILE_T[,] vals = new TILE_T[m_x, m_y];
+					Debug.Log("splatterSolid() going for the pass #"+pass+": "+rate+" / "+difficulty);
+					for(int tx = 1; tx < m_x-1; ++tx){
+						for(int ty = 1; ty < m_y-1; ++ty){
+							if(softCheckFlag(tx, ty, TILE_T.STICKY|TILE_T.SLIPPERY)){
+								for(int kx = tx - 1; kx <= tx + 1; ++kx){
+									for(int ky = ty - 1; ky <= ty + 1; ++ky){
+										if(checkFlag(kx, ky, TILE_T.SOLID)){
+											vals[kx, ky] = map[tx, ty];
+										}
+									}
+								}
+							}
+						}
+					}
+
+					// Now go and update the map
+					for(int tx = 0; tx < m_x; ++tx){
+						for(int ty = 0; ty < m_y; ++ty){
+							map[tx, ty] |= vals[tx, ty];
+						}
+					}
+				}while(rate < difficulty);
+			} else {
+				Debug.Log("Difficulty is to low for splatterSolid(): "+ difficulty + " >= " + 25f);
 			}
 		}
 
@@ -416,7 +485,7 @@ namespace Lib{
 
 						// It must be surrounded to be valid
 						if(sideCount==2){
-							if(botCount == 3 || sideCount == 3){
+							if(botCount >= 3 || sideCount >= 3 || (botCount + sideCount)>=5){
 								map[tx,ty] = to;
 							}
 						}
@@ -458,7 +527,7 @@ namespace Lib{
 
 						// It must be surrounded to be valid
 						if(sideCount==2){
-							if(botCount == 3 || sideCount == 3){
+							if(botCount >= 3 || sideCount >= 3 || (botCount + sideCount)>=5){
 								map[tx,ty] = to;
 							}
 						}

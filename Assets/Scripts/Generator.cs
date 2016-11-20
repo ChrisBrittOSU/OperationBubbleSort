@@ -5,7 +5,7 @@ using System.Collections;
 public class Generator : MonoBehaviour {
 
     // Map generation variables
-    public int x = 100, y = 100, difficulty = 30;
+    public int x = 100, y = 100, difficulty = 50;
     public float x_offset = 0.66f, y_offset = 0.66f; // offset value of each tile
     public float x_origin = 0f, y_origin = 0f; // origin of tile (0,0)
     public float tileDepth = 0f;
@@ -30,6 +30,7 @@ public class Generator : MonoBehaviour {
 	    if(Input.GetKeyDown(KeyCode.Space))
         {
             map.generate(x,y,difficulty);
+            map.printFile("Grid.txt");
             InstantiateMap(map);
         }
 	}
@@ -63,7 +64,6 @@ public class Generator : MonoBehaviour {
                 } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
                 {
                     // Do general hazard code here
-
                     if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
                       // The trap is a spike
                     }
