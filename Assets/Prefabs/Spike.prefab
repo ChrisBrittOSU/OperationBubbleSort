@@ -21,7 +21,6 @@ GameObject:
   - 4: {fileID: 4000010593058736}
   - 212: {fileID: 212000010375454638}
   - 58: {fileID: 58000010066031526}
-  - 114: {fileID: 114000013806957888}
   m_Layer: 0
   m_Name: Spike
   m_TagString: Spike
@@ -56,17 +55,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.165
---- !u!114 &114000013806957888
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000014111550672}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2db3507714cdbd4ca5087d15d133eb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!212 &212000010375454638
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -130,6 +130,11 @@ MonoBehaviour:
   tilePrefab: {fileID: 1000012134263618, guid: 4708a531f4fbfc5489a7cbbe8fac42b8, type: 2}
   spikePrefab: {fileID: 1000014111550672, guid: be21fd7a576ba5a46adb5e89ece200bc,
     type: 2}
+  spawnPoint: {fileID: 1000010442291610, guid: f69441ed416d28847b01e4afbc448945, type: 2}
+  exitPoint: {fileID: 1000010787673320, guid: 35067ed14c7254f4cb75bd6e2557cf8b, type: 2}
+  prefabParentPrefab: {fileID: 1000014089791230, guid: c787ea3ec25d9de4eba77d2ff9bcd2cd,
+    type: 2}
+  prefabParent: {fileID: 0}
 --- !u!4 &227864333
 Transform:
   m_ObjectHideFlags: 0
