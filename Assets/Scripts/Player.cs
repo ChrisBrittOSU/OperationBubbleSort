@@ -57,8 +57,8 @@ public class Player : MonoBehaviour {
     // Game over boolean
     public bool gameOver = true;
 
-    // Animator of the UI
-    public Animator uiAnim;
+    // Ask for a new level
+    public bool askForNewLevel = false;
 
     // Ref to child Grounder instance
     public Grounder grounder;
@@ -78,8 +78,6 @@ public class Player : MonoBehaviour {
 	private bool charging = false;
 
 	private float walking = 0f;
-
-	private bool readyForJump = false;
 
 	private bool lowGravity = false;
 
@@ -254,7 +252,8 @@ public class Player : MonoBehaviour {
     // End the game (calls UI anim state change)
     private void GameOver()
     {
-        uiAnim.SetInteger("state", 3);
+        gameOver = true;
+        askForNewLevel = false;
     }
 
 	// ---------------------------------------------------------------------------
@@ -339,6 +338,10 @@ public class Player : MonoBehaviour {
         if(other.gameObject.tag.Equals("Spike"))
         {
             GameOver();
+        }
+        else if(other.gameObject.tag.Equals("Finish"))
+        {
+            askForNewLevel = true;
         }
     }
 }
