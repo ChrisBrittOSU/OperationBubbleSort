@@ -93,6 +93,7 @@ public class Player : MonoBehaviour {
 		m_rigidBody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         grounder.isGrounded = true;
+        soundBoard = GetComponent<SoundBoard>();
 	}
 
     // Update is called once per frame
