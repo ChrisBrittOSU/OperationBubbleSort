@@ -44,6 +44,9 @@ public class Player : MonoBehaviour {
 
 	public float FORCE_JUMP_FACTOR = 1.5f;
 
+    // Whether the player is in a bouncing state or not
+    public bool isBouncing = false;
+
   // Ref to child Grounder instance
   public Grounder grounder;
 
@@ -56,6 +59,8 @@ public class Player : MonoBehaviour {
 	// ---------------------------------------------------------------------------
 
 	private Rigidbody2D m_rigidBody;
+
+    private Animator anim;
 
 	private bool charging = false;
 
@@ -72,19 +77,29 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		m_rigidBody = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         grounder.isGrounded = true;
-
-		Lib.Map myMap = new Lib.Map(100,100, 10);
-		myMap.printFile(@"Grid.txt");
-		Debug.Log("Done");
-		UnityEditor.EditorApplication.isPlaying = false;
 	}
 
-	// Update is called once per frame
-	// IO
-	void Update () {
+    // Update is called once per frame
+    void Update()
+    {
+        if(isBouncing)
+        {
+            updateBouncing();
+        }
+        else
+        {
+            updateWalking();
+        }
+    }
 
-		if(Input.GetKey(KeyCode.Space)){
+	
+	// Updates the walking of the player while not bouncing
+	void updateWalking () {
+
+		if(Input.GetAxisRaw("Jump") > 0)
+        {
 			charging = true;
 		} else if(charging && chargeTime < MAX_JUMP_TICK_TIMEOUT){
 			charging = false;
@@ -111,8 +126,8 @@ public class Player : MonoBehaviour {
 		}
 
 		if(grounder.isGrounded){
-
-		}
+            
+        }
 		else {
 			if(m_rigidBody.velocity.x > 0f){
 				faceRight();
@@ -131,7 +146,10 @@ public class Player : MonoBehaviour {
 		}
 
 		if(grounder.isGrounded){
-			m_rigidBody.gravityScale = NORMAL_GRAV;
+            // On the ground and not bouncing, either idle or walking
+            anim.SetBool("isIdle", Mathf.Abs(walking) > EPSILON);
+            anim.SetBool("isFalling", false);
+            m_rigidBody.gravityScale = NORMAL_GRAV;
 			if(Mathf.Abs(walking) > EPSILON){
 				m_rigidBody.drag = MOVEMENT_DRAG;
 				m_rigidBody.AddForce(new Vector2(walkSpeed * walking * getWalkingSpeedModifier(), 0f));
@@ -139,6 +157,8 @@ public class Player : MonoBehaviour {
 				m_rigidBody.drag = STILL_DRAG;
 			}
 		} else {
+            anim.SetBool("isIdle", false);
+            anim.SetBool("isFalling", true);
 			m_rigidBody.drag = AIR_DRAG;
 			if(lowGravity){
 				lowGravity = false;
@@ -150,6 +170,16 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+    // Updates the bouncing while not walking
+    void updateBouncing()
+    {
+        if(Input.GetAxisRaw("Jump") > 0)
+        {
+            isBouncing = false;
+        }
+        anim.SetBool("isBouncing", isBouncing);
+    }
+
 	// ---------------------------------------------------------------------------
 	// High level action functions
 	// ---------------------------------------------------------------------------
@@ -157,7 +187,10 @@ public class Player : MonoBehaviour {
 	// This function serves to fire the object at the mouse.
 	private void fire(){
 		if(!grounder.isGrounded) return;
-
+        isBouncing = true;
+        anim.SetBool("isIdle", false);
+        anim.SetBool("isFalling", false);
+        anim.SetBool("isBouncing", isBouncing);
 		float vx, vy;
 		float angle = getAngle(getMousePosition());
 		float speed = getLaunchStrength(chargeTime);
@@ -183,6 +216,9 @@ public class Player : MonoBehaviour {
 		if(!grounder.isGrounded) return;
 
 		m_rigidBody.AddForce(new Vector2(0f, jumpStrength));
+        anim.SetBool("isIdle", false);
+        anim.SetBool("isFalling", true);
+        anim.SetBool("isBouncing", false);
 		chargeTime = 0f;
 	}
 
