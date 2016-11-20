@@ -274,6 +274,7 @@ namespace Lib{
 			if(inRange(x-1, y)&&(checkFlag(x-1, y, TILE_T.SOLID))){
 				result |= FACE_T.LEFT;
 			}
+			return result;
 		}
 
 		// Remove solo platforms
