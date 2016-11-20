@@ -74,11 +74,10 @@ public class Player : MonoBehaviour {
 		m_rigidBody = GetComponent<Rigidbody2D>();
         grounder.isGrounded = true;
 
-		// lib.Map myMap = new lib.Map();
-		// myMap.generate(100,100, 10);
-		// myMap.printFile(@"Grid.txt");
-		// Debug.Log("Done");
-		// UnityEditor.EditorApplication.isPlaying = false;
+		Lib.Map myMap = new Lib.Map(100,100, 10);
+		myMap.printFile(@"Grid.txt");
+		Debug.Log("Done");
+		UnityEditor.EditorApplication.isPlaying = false;
 	}
 
 	// Update is called once per frame
