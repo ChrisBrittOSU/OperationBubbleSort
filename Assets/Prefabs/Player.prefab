@@ -809,9 +809,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adbbb9345f79a4b80a2a86b3a2d0d00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strength: 150
+  strength: 300
   chargeTime: 0
-  jumpStrength: 35
+  jumpStrength: 50
   minTheta: 0
   maxTheta: 6.2831855
   minVel: -10
