@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-namespace lib{
+namespace Lib{
 	public enum TILE_T : int{
 		PASSABLE =					0x00000001,
 		SOLID = 						0x00000002
@@ -35,6 +35,12 @@ namespace lib{
 	}
 
 	public class Map{
+		public Map(int x, int y, int difficulty){
+			m_x = x;
+			m_y = y;
+			generate(x,y,difficulty);
+		}
+
 		private TILE_T[,] map;
 		private int m_x, m_y;
 
@@ -104,13 +110,16 @@ namespace lib{
 				}
 			}
 
+			// Remove solo platforms
 			for(int tx = 1; tx < m_x-1; ++tx){
 				for(int ty = 1; ty < m_y-1; ++ty){
 					if(isAlone(tx,ty,TILE_T.SOLID)){
-						map[tx,ty] = TILE_T.PASSABLE;
+						map[tx,ty] ^= TILE_T.PASSABLE;
 					}
 				}
 			}
+
+			//
 		}
 
 		public void printFile(string filename){
