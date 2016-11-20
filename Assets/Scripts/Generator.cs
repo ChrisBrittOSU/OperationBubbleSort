@@ -15,6 +15,7 @@ public class Generator : MonoBehaviour {
     public Sprite[] tileSprites;
     // Prefab of tile gameObject
     public GameObject tilePrefab;
+    public GameObject spikePrefab;
 
 	// Use this for initialization
 	void Start ()
@@ -65,7 +66,8 @@ public class Generator : MonoBehaviour {
                     // Do general hazard code here
 
                     if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
-                      // The trap is a spike
+                        Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
+                        GameObject tileRef = Instantiate(spikePrefab, position, Quaternion.identity) as GameObject;
                     }
 
                     else if(map.softCheckFlag(i,j,TILE_T.SCORE)){

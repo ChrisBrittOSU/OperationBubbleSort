@@ -117,9 +117,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1cab8c46183e24482842e3cf87eae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 80
-  y: 80
-  difficulty: 25
+  x: 30
+  y: 30
+  difficulty: 70
   x_offset: 0.66
   y_offset: 0.66
   x_origin: -10
@@ -127,7 +127,9 @@ MonoBehaviour:
   tileDepth: 0
   tileSprites:
   - {fileID: 21300000, guid: 97f9d6e8b41be464e9cf812f64c95764, type: 3}
-  tilePrefab: {fileID: 1000010556046150, guid: 0884db7cd3ef12144bec6b659d991e81, type: 2}
+  tilePrefab: {fileID: 1000012134263618, guid: 4708a531f4fbfc5489a7cbbe8fac42b8, type: 2}
+  spikePrefab: {fileID: 1000014111550672, guid: be21fd7a576ba5a46adb5e89ece200bc,
+    type: 2}
 --- !u!4 &227864333
 Transform:
   m_ObjectHideFlags: 0
