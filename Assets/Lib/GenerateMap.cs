@@ -19,6 +19,14 @@ namespace Lib{
 		SCORE =							0x00020000
 	};
 
+	public enum FACE_T : int{
+		NULL = 0x0,
+		RIGHT = 0x1,
+		LEFT = 0x2,
+		DOWN = 0x4,
+		UP = 0x8
+	};
+
 	public class RandomTile{
 		private int current = 0;
 		private int maxDif = 5;
@@ -145,6 +153,10 @@ namespace Lib{
 
 			removeSoloPlatform();
 
+			removeDiagonal();
+
+			removeSoloPlatform();
+
 			removeSingleAround();
 
 			fillAlmostFull();
@@ -165,10 +177,14 @@ namespace Lib{
 			smoothSides(TILE_T.PASSABLE, TILE_T.SOLID);
 			smoothSides(TILE_T.SOLID, TILE_T.PASSABLE);
 
+			removeDiagonal();
+
 			cleanupFlag(TILE_T.PASSABLE);
 			cleanupFlag(TILE_T.SOLID);
 
 			placeTraps(difficulty);
+
+			bottomTraps(difficulty);
 
 			placeSpawnPoint();
 			placeExitPoint();
@@ -242,6 +258,22 @@ namespace Lib{
 
 		public int maxY(){
 			return m_y;
+		}
+
+		public FACE_T getFace(int x, int y){
+			FACE_T result = FACE_T.NULL;
+			if(inRange(x, y-1)&&(checkFlag(x, y-1, TILE_T.SOLID))){
+				result |= FACE_T.UP;
+			}
+			if(inRange(x, y+1)&&(checkFlag(x, y+1, TILE_T.SOLID))){
+				result |= FACE_T.DOWN;
+			}
+			if(inRange(x+1, y)&&(checkFlag(x+1, y, TILE_T.SOLID))){
+				result |= FACE_T.RIGHT;
+			}
+			if(inRange(x-1, y)&&(checkFlag(x-1, y, TILE_T.SOLID))){
+				result |= FACE_T.LEFT;
+			}
 		}
 
 		// Remove solo platforms
@@ -318,6 +350,33 @@ namespace Lib{
 				}while(rate < difficulty);
 			} else {
 				Debug.Log("Difficulty is to low for splatterSolid(): "+ difficulty + " >= " + 25f);
+			}
+		}
+
+		private void removeDiagonal(){
+			for(int tx = 1; tx < m_x - 2; ++tx){
+				for(int ty = 1; ty < m_y - 2; ++ty){
+					if(
+							(
+								checkFlag(tx,ty,TILE_T.SOLID) &&
+								checkFlag(tx+1,ty+1,TILE_T.SOLID) &&
+								checkFlag(tx+1,ty,TILE_T.PASSABLE) &&
+								checkFlag(tx,ty+1,TILE_T.PASSABLE)
+							)
+							||
+							(
+								checkFlag(tx,ty,TILE_T.PASSABLE) &&
+								checkFlag(tx+1,ty+1,TILE_T.PASSABLE) &&
+								checkFlag(tx+1,ty,TILE_T.SOLID) &&
+								checkFlag(tx,ty+1,TILE_T.SOLID)
+							)
+						){
+							map[tx,ty] = TILE_T.PASSABLE;
+							map[tx+1,ty] = TILE_T.PASSABLE;
+							map[tx,ty+1] = TILE_T.PASSABLE;
+							map[tx+1,ty+1] = TILE_T.PASSABLE;
+						}
+				}
 			}
 		}
 
@@ -408,9 +467,26 @@ namespace Lib{
 			return spawnFound && exitFound;
 		}
 
+		private void bottomTraps(float difficulty){
+			if(difficulty<=0.001f) return;
+
+			int y = m_y - 2;
+			for(int x = 0; x < m_x; ++x){
+				if(checkFlag(x, y, TILE_T.PASSABLE)){
+					if(difficulty >= 50f){
+						map[x,y] = TILE_T.HAZARD|TILE_T.SPIKE;
+					} else if(difficulty >= 25f){
+						map[x,y] = rgen.Next()%2 == 0 ? TILE_T.HAZARD|TILE_T.SPIKE : map[x,y];
+					} else {
+						map[x,y] = rgen.Next()%4 == 0 ? TILE_T.HAZARD|TILE_T.SPIKE : map[x,y];
+					}
+				}
+			}
+		}
+
 		private bool placeExitPoint(){
-			for(int ty = 2; ty < m_y - 6; ++ty){
-				for(int tx = m_x - 3; tx > 2; --tx){
+			for(int ty = 5; ty < m_y - 6; ++ty){
+				for(int tx = m_x - 7; tx > 2; --tx){
 					if(countAround(tx, ty, TILE_T.PASSABLE)>=8){
 						map[tx, ty] = TILE_T.EXIT_POINT;
 						map[tx-2, ty+1] = TILE_T.SOLID;
@@ -426,8 +502,8 @@ namespace Lib{
 		}
 
 		private bool placeSpawnPoint(){
-			for(int ty = m_y - 5; ty > 2; --ty){
-				for(int tx = 3; tx < m_x; ++tx){
+			for(int ty = m_y - 7; ty > 2; --ty){
+				for(int tx = 5; tx < m_x; ++tx){
 					if(countAround(tx, ty, TILE_T.PASSABLE)>=8){
 						map[tx, ty] = TILE_T.SPAWN_POINT;
 						map[tx-2, ty+1] = TILE_T.SOLID;
