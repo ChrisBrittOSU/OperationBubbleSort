@@ -2,8 +2,16 @@
 using System.Collections;
 namespace Lib{
 	public enum TILE_T : int{
+		// General types            XX
 		PASSABLE =					0x00000001,
-		SOLID = 						0x00000002
+		SOLID = 						0x00000002,
+		HAZARD =						0x00000004,
+
+		// Solid Modifiers        XX
+		STICKY = 						0x00000100,
+
+		// Hazard types         XX
+		SPIKE =							0x00010000
 	};
 
 	public class RandomTile{
@@ -63,6 +71,27 @@ namespace Lib{
 			return (map[x,y] & flag) == flag;
 		}
 
+		public bool softCheckFlag(int x, int y, TILE_T flag){
+			return (map[x,y] & flag) > 0;
+		}
+
+		private int countAround(int x, int y, TILE_T flag){
+			int count = 0;
+			for(int tx = x - 1; tx <= x + 1; ++tx){
+				for(int ty = y - 1; ty <= y + 1; ++ty){
+					if(tx == x && ty == y){
+						continue;
+					}
+					else if(!inRange(tx, ty)){
+						continue;
+					} else if(checkFlag(tx,ty,flag)){
+						++count;
+					}
+				}
+			}
+			return count;
+		}
+
 		private bool isAlone(int x, int y, TILE_T flag){
 			for(int tx = x - 1; tx <= x + 1; ++tx){
 				for(int ty = y - 1; ty <= y + 1; ++ty){
@@ -71,14 +100,12 @@ namespace Lib{
 					}
 					else if(!inRange(tx, ty)){
 						continue;
-					} else {
-						if(checkFlag(tx,ty,flag)){
-							return false;
-						}
+					} else if(checkFlag(tx,ty,flag)){
+						return false;
 					}
 				}
 			}
-			return true;
+		return true;
 		}
 
 		// Generate a map of the given size.
@@ -102,24 +129,23 @@ namespace Lib{
 					else{
 						int choice = rt.getChoice();
 						if(choice < 0){
-							map[tx,ty] |= TILE_T.SOLID;
+							map[tx,ty] = TILE_T.SOLID;
 						}else{
-							map[tx,ty] |= TILE_T.PASSABLE;
+							map[tx,ty] = TILE_T.PASSABLE;
 						}
 					}
 				}
 			}
 
-			// Remove solo platforms
-			for(int tx = 1; tx < m_x-1; ++tx){
-				for(int ty = 1; ty < m_y-1; ++ty){
-					if(isAlone(tx,ty,TILE_T.SOLID)){
-						map[tx,ty] ^= TILE_T.PASSABLE;
-					}
-				}
-			}
+			removeSoloPlatform();
 
-			//
+			removeSingleAround();
+
+			fillAlmostFull();
+
+			removeSoloPlatform();
+
+			fillAlmostFull();
 		}
 
 		public void printFile(string filename){
@@ -160,6 +186,56 @@ namespace Lib{
 
 		public int maxY(){
 			return m_y;
+		}
+
+		// Remove solo platforms
+		private void removeSoloPlatform(){
+			for(int tx = 1; tx < m_x-1; ++tx){
+				for(int ty = 1; ty < m_y-1; ++ty){
+					if(isAlone(tx,ty,TILE_T.SOLID)){
+						map[tx,ty] = TILE_T.PASSABLE;
+					}
+				}
+			}
+		}
+
+		// Remove outsiders to give us some more Space
+		private void removeSingleAround(){
+			for(int tx = 1; tx < m_x-1; ++tx){
+				for(int ty = 1; ty < m_y-1; ++ty){
+					if(countAround(tx,ty,TILE_T.SOLID)<=1){
+						map[tx,ty] = TILE_T.PASSABLE;
+					}
+				}
+			}
+		}
+
+		// Fill in "almost full"
+		private void fillAlmostFull(){
+			for(int tx = 1; tx < m_x-1; ++tx){
+				for(int ty = 1; ty < m_y-1; ++ty){
+					if(countAround(tx,ty,TILE_T.SOLID) >= 6){
+						map[tx,ty] = TILE_T.SOLID;
+					}
+				}
+			}
+		}
+
+		private void smoothPlatform(){
+			for(int tx = 1; tx < m_x-1; ++tx){
+				for(int ty = 1; ty < m_y-1; ++ty){
+					if(checkFlag(tx,ty,TILE_T.PASSABLE)){
+						int botCount = 0;
+						for(int kx = tx - 1; kx <= tx + 1; ++kx){
+							for(int ky = ty - 1; ky <= ty + 1; ++ky){
+								if(kx == tx && ky == ty){
+									continue;
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
