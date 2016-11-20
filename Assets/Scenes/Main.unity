@@ -805,6 +805,7 @@ MonoBehaviour:
   menuButtons: {fileID: 592815903}
   title: {fileID: 604469801}
   generator: {fileID: 1316360155}
+  uiAnim: {fileID: 990920113}
 --- !u!225 &990920112
 CanvasGroup:
   m_ObjectHideFlags: 0
