@@ -12,6 +12,13 @@ public class Player : MonoBehaviour {
 
 	public float minTheta = 0f, maxTheta = 2f	 * Mathf.PI;
 
+    // absolute min and max velocity values
+    public float minVel = -20f, maxVel = 20f;
+
+    // Properties to determine bounciness of collions
+    public CircleCollider2D circleCollider2D;
+    public PhysicsMaterial2D[] physicsMats;
+
 	/// Attributes for the launch curve
 	// The amount of time that takes for the initial charge
 	public float ascTime = 1f;
@@ -92,6 +99,12 @@ public class Player : MonoBehaviour {
         {
             updateWalking();
         }
+
+        // clamp the velocity between the min and max values
+        Vector2 vel = m_rigidBody.velocity;
+        float x = Mathf.Clamp(vel.x, minVel, maxVel);
+        float y = Mathf.Clamp(vel.y, minVel, maxVel);
+        m_rigidBody.velocity = new Vector2(x, y);
     }
 
 
@@ -141,6 +154,10 @@ public class Player : MonoBehaviour {
 
 	// This updates the physics system.
 	void updatePhysics(float dt) {
+
+        // change the physics material to normal
+        circleCollider2D.sharedMaterial = physicsMats[0];
+
 		if(charging){
 			chargeTime += grounder.isGrounded ? dt : dt / 2f;
 		}
@@ -178,6 +195,8 @@ public class Player : MonoBehaviour {
             isBouncing = false;
         }
         anim.SetBool("isBouncing", isBouncing);
+        // change the physics material to bouncy
+        circleCollider2D.sharedMaterial = physicsMats[1];
     }
 
 	// ---------------------------------------------------------------------------

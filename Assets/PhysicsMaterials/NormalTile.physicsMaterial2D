@@ -5,6 +5,6 @@ PhysicsMaterial2D:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: NormalPlayer
-  friction: 0.2
-  bounciness: 0.1
+  m_Name: NormalTile
+  friction: 0.4
+  bounciness: 0
