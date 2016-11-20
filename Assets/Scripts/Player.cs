@@ -3,9 +3,12 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	// ---------------------------------------------------------------------------
-	// Public variables
-	// ---------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------
+    // Public variables
+    // ---------------------------------------------------------------------------
+
+    // Sound board
+    public SoundBoard soundBoard;
 
 	// Attributes for determining launch strength
 	public float strength = 75f, chargeTime = 0f, jumpStrength = 35;
@@ -342,10 +345,17 @@ public class Player : MonoBehaviour {
         if(other.gameObject.tag.Equals("Spike"))
         {
             GameOver();
+            soundBoard.playPop();
         }
         else if(other.gameObject.tag.Equals("Finish"))
         {
             askForNewLevel = true;
+            soundBoard.playVictory();
         }
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        soundBoard.playBounce();
     }
 }
