@@ -73,6 +73,12 @@ public class Player : MonoBehaviour {
 	void Start () {
 		m_rigidBody = GetComponent<Rigidbody2D>();
         grounder.isGrounded = true;
+
+		lib.Map myMap = new lib.Map();
+		myMap.generate(100,100, 10);
+		myMap.printFile(@"Grid.txt");
+		Debug.Log("Done");
+		UnityEditor.EditorApplication.isPlaying = false;
 	}
 
 	// Update is called once per frame
@@ -92,7 +98,7 @@ public class Player : MonoBehaviour {
 		}
 
 		// Check for a forced jump
-		Debug.Log(chargeTime+" > "+FORCE_JUMP_FACTOR+ " * "+ maxChargePeriod());
+		// Debug.Log(chargeTime+" > "+FORCE_JUMP_FACTOR+ " * "+ maxChargePeriod());
 		if(chargeTime > FORCE_JUMP_FACTOR * maxChargePeriod()){
 			charging = false;
 			jump();
@@ -251,7 +257,7 @@ public class Player : MonoBehaviour {
 	}
 
 	private float maxChargePeriod(){
-		Debug.Log(ascTime + " + " + fullTime + " + " + overChargeTime);
+		// Debug.Log(ascTime + " + " + fullTime + " + " + overChargeTime);
 		return ascTime + fullTime + overChargeTime;
 	}
 }
