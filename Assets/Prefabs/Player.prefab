@@ -243,7 +243,7 @@ GameObject:
   - 95: {fileID: 95000012627597008}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -846,6 +846,7 @@ MonoBehaviour:
   MAX_JUMP_TICK_TIMEOUT: 0.25
   FORCE_JUMP_FACTOR: 1.5
   isBouncing: 0
+  gameOver: 1
   grounder: {fileID: 114000012343855198}
 --- !u!212 &212000010533643478
 SpriteRenderer:

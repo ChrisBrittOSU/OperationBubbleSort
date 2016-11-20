@@ -54,6 +54,9 @@ public class Player : MonoBehaviour {
     // Whether the player is in a bouncing state or not
     public bool isBouncing = false;
 
+    // Game over boolean
+    public bool gameOver = true;
+
   // Ref to child Grounder instance
   public Grounder grounder;
 
@@ -91,20 +94,22 @@ public class Player : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if(isBouncing)
+        if (!gameOver)
         {
-            updateBouncing();
+            if (isBouncing)
+            {
+                updateBouncing();
+            }
+            else
+            {
+                updateWalking();
+            }
+            // clamp the velocity between the min and max values
+            Vector2 vel = m_rigidBody.velocity;
+            float x = Mathf.Clamp(vel.x, minVel, maxVel);
+            float y = Mathf.Clamp(vel.y, minVel, maxVel);
+            m_rigidBody.velocity = new Vector2(x, y);
         }
-        else
-        {
-            updateWalking();
-        }
-
-        // clamp the velocity between the min and max values
-        Vector2 vel = m_rigidBody.velocity;
-        float x = Mathf.Clamp(vel.x, minVel, maxVel);
-        float y = Mathf.Clamp(vel.y, minVel, maxVel);
-        m_rigidBody.velocity = new Vector2(x, y);
     }
 
 
@@ -241,6 +246,12 @@ public class Player : MonoBehaviour {
 		chargeTime = 0f;
 	}
 
+    // End the game (calls UI anim state change)
+    private void GameOver()
+    {
+
+    }
+
 	// ---------------------------------------------------------------------------
 	// Functions to wrap around the Unity API to give us a more intuitive interface
 	// ---------------------------------------------------------------------------
@@ -314,4 +325,15 @@ public class Player : MonoBehaviour {
 		// Debug.Log(ascTime + " + " + fullTime + " + " + overChargeTime);
 		return ascTime + fullTime + overChargeTime;
 	}
+
+    // ---------------------------------------------------------------------------
+    // Events: Collision with spikes
+    // --------------------------------------------------------------------------- 
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag.Equals("Spike"))
+        {
+            GameOver();
+        }
+    }
 }
