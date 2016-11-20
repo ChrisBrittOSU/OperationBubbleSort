@@ -39,29 +39,7 @@ public class Generator : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        // If space bar is pressed, generate a new map
-	    if(Input.GetKeyDown(KeyCode.G))
-        {
-            // If we have a reference here, then we must destroy it
-            if(prefabParent)
-            {
-                Destroy(prefabParent.gameObject);
-            }
-            if(player)
-            {
-                Destroy(player.gameObject);
-            }
-            // generate a new matrix
-            map.generate(x,y,difficulty);
-            // create a new parent object and create a temporary reference
-            GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
-            // create a permanent reference to this parent transform
-            prefabParent = refOfPrefabParent.transform;
-            map.printFile("Grid.txt");
-            InstantiateMap(map);
-            // after the map has been created, let the player start the game
-            player.GetComponent<Player>().gameOver = false;
-        }
+
 	}
 
     // Goes through each element in the map matrix and instantiates the gameObjects
@@ -132,5 +110,29 @@ public class Generator : MonoBehaviour {
     {
         Vector3 position = new Vector3(xOrg + xOffset * (float)x, yOrg + yOffset * (float)y, z);
         return position;
+    }
+
+    // Calls the Generator to create a new map
+    public void Generate()
+    {
+        // If we have a reference here, then we must destroy it
+        if (prefabParent)
+        {
+            Destroy(prefabParent.gameObject);
+        }
+        if (player)
+        {
+            Destroy(player.gameObject);
+        }
+        // generate a new matrix
+        map.generate(x, y, difficulty);
+        // create a new parent object and create a temporary reference
+        GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
+        // create a permanent reference to this parent transform
+        prefabParent = refOfPrefabParent.transform;
+        map.printFile("Grid.txt");
+        InstantiateMap(map);
+        // after the map has been created, let the player start the game
+        player.GetComponent<Player>().gameOver = false;
     }
 }

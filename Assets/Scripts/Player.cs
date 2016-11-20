@@ -57,6 +57,9 @@ public class Player : MonoBehaviour {
     // Game over boolean
     public bool gameOver = true;
 
+    // Animator of the UI
+    public Animator uiAnim;
+
   // Ref to child Grounder instance
   public Grounder grounder;
 
@@ -249,7 +252,7 @@ public class Player : MonoBehaviour {
     // End the game (calls UI anim state change)
     private void GameOver()
     {
-
+        uiAnim.SetInteger("state", 3);
     }
 
 	// ---------------------------------------------------------------------------
