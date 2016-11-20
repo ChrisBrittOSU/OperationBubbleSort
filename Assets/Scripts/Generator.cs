@@ -5,7 +5,7 @@ using System.Collections;
 public class Generator : MonoBehaviour {
 
     // Map generation variables
-    public int x = 30, y = 30, difficulty = 10;
+    public int x = 100, y = 100, difficulty = 10;
     public float x_offset = 0.66f, y_offset = 0.66f; // offset value of each tile
     public float x_origin = 0f, y_origin = 0f; // origin of tile (0,0)
     public float tileDepth = 0f;
@@ -22,7 +22,7 @@ public class Generator : MonoBehaviour {
         // create a new map object (calls generate())
         map = new Map(x,y,difficulty);
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -47,7 +47,7 @@ public class Generator : MonoBehaviour {
                 {
                     // returns 0 for now
                     int spriteIndex = FindCorrectTileSprite(i, j);
-                    Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, j, i, tileDepth);
+                    Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     GameObject tileRef = Instantiate(tilePrefab, position, Quaternion.identity) as GameObject;
                     tileRef.GetComponent<SpriteRenderer>().sprite = tileSprites[spriteIndex];
                 }
