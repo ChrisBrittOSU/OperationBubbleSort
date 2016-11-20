@@ -229,6 +229,36 @@ Prefab:
       propertyPath: m_LocalScale.y
       value: 1.8
       objectReference: {fileID: 0}
+    - target: {fileID: 114000014015588396, guid: d3f25264d7d869643b1cfed55f93300c,
+        type: 2}
+      propertyPath: ascTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014015588396, guid: d3f25264d7d869643b1cfed55f93300c,
+        type: 2}
+      propertyPath: fullTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014015588396, guid: d3f25264d7d869643b1cfed55f93300c,
+        type: 2}
+      propertyPath: overChargeTime
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014015588396, guid: d3f25264d7d869643b1cfed55f93300c,
+        type: 2}
+      propertyPath: STILL_DRAG
+      value: 0.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014015588396, guid: d3f25264d7d869643b1cfed55f93300c,
+        type: 2}
+      propertyPath: MAX_JUMP_TICK_TIMEOUT
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000014015588396, guid: d3f25264d7d869643b1cfed55f93300c,
+        type: 2}
+      propertyPath: grounder
+      value: 
+      objectReference: {fileID: 1004877290}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d3f25264d7d869643b1cfed55f93300c, type: 2}
   m_IsPrefabParent: 0
@@ -464,6 +494,12 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
+--- !u!114 &1004877290 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000012343855198, guid: d3f25264d7d869643b1cfed55f93300c,
+    type: 2}
+  m_PrefabInternal: {fileID: 250675452}
+  m_Script: {fileID: 11500000, guid: 2ef8b09b3ac228c44b15b13bd75a46f6, type: 3}
 --- !u!1 &1109793086
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class Player : MonoBehaviour {
 	// ---------------------------------------------------------------------------
 
 	// Attributes for determining launch strength
-	public float strength = 200f, chargeTime = 0f;
+	public float strength = 75f, chargeTime = 0f, jumpStrength = 35;
 
 	public float minTheta = 0f, maxTheta = 2f	 * Mathf.PI;
 
@@ -27,15 +27,18 @@ public class Player : MonoBehaviour {
 	public float overChargePower = 60.0f;
 
 	// The speed at which the character gains momentum
-	public float walkSpeed = 5f;
+	public float walkSpeed = 2f;
 
-	public float airWalkSpeed = 2f;
+	public float airWalkSpeed = 0.7f;
 
 	public float EPSILON = 0.001f;
 
 	public float AIR_DRAG = 0.025f;
 	public float MOVEMENT_DRAG = 0.05f;
 	public float STILL_DRAG = 0.125f;
+
+	public float NORMAL_GRAV = 1.0f;
+	public float LAUNCH_GRAV = 0.333f;
 
 	public float MAX_JUMP_TICK_TIMEOUT = 0.25f;
 
@@ -59,6 +62,8 @@ public class Player : MonoBehaviour {
 	private float walking = 0f;
 
 	private bool readyForJump = false;
+
+	private bool lowGravity = false;
 
 	// ---------------------------------------------------------------------------
 	// Overloaded system functions
@@ -121,6 +126,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if(grounder.isGrounded){
+			m_rigidBody.gravityScale = NORMAL_GRAV;
 			if(Mathf.Abs(walking) > EPSILON){
 				m_rigidBody.drag = MOVEMENT_DRAG;
 				m_rigidBody.AddForce(new Vector2(walkSpeed * walking * getWalkingSpeedModifier(), 0f));
@@ -129,9 +135,13 @@ public class Player : MonoBehaviour {
 			}
 		} else {
 			m_rigidBody.drag = AIR_DRAG;
-				if(Mathf.Abs(walking) > EPSILON){
-					m_rigidBody.AddForce(new Vector2(airWalkSpeed * walking, 0f));
-				}
+			if(lowGravity){
+				lowGravity = false;
+				m_rigidBody.gravityScale = LAUNCH_GRAV;
+			}
+			if(Mathf.Abs(walking) > EPSILON){
+				m_rigidBody.AddForce(new Vector2(airWalkSpeed * walking, 0f));
+			}
 		}
 	}
 
@@ -150,6 +160,8 @@ public class Player : MonoBehaviour {
 		vx = Mathf.Cos(angle) * speed;
 		vy = Mathf.Sin(angle) * speed;
 
+		lowGravity = true;
+
 		m_rigidBody.AddForce(new Vector2(vx, vy));
 	}
 
@@ -165,7 +177,7 @@ public class Player : MonoBehaviour {
 	private void jump(){
 		if(!grounder.isGrounded) return;
 
-		m_rigidBody.AddForce(new Vector2(0f, 100f));
+		m_rigidBody.AddForce(new Vector2(0f, jumpStrength));
 		chargeTime = 0f;
 	}
 
