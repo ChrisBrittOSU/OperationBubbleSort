@@ -5,7 +5,7 @@ using System.Collections;
 public class Generator : MonoBehaviour {
 
     // Map generation variables
-    public int x = 100, y = 100, difficulty = 30;
+    public int x = 100, y = 100, difficulty = 50;
     public float x_offset = 0.66f, y_offset = 0.66f; // offset value of each tile
     public float x_origin = 0f, y_origin = 0f; // origin of tile (0,0)
     public float tileDepth = 0f;
@@ -41,8 +41,12 @@ public class Generator : MonoBehaviour {
                 Destroy(prefabParent.gameObject);
             }
             map.generate(x,y,difficulty);
+<<<<<<< HEAD
             GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
             prefabParent = refOfPrefabParent.transform;
+=======
+            map.printFile("Grid.txt");
+>>>>>>> origin/dev
             InstantiateMap(map);
         }
 	}
@@ -75,7 +79,6 @@ public class Generator : MonoBehaviour {
                 } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
                 {
                     // Do general hazard code here
-
                     if(map.softCheckFlag(i,j,TILE_T.SPIKE)){
                         GameObject tileRef = CreateNewTile(spikePrefab, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                     }
