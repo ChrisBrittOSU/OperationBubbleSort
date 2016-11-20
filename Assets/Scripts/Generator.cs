@@ -8,7 +8,7 @@ public class Generator : MonoBehaviour {
     public int x = 100, y = 100, difficulty = 50;
     public float x_offset = 0.66f, y_offset = 0.66f; // offset value of each tile
     public float x_origin = 0f, y_origin = 0f; // origin of tile (0,0)
-    public float tileDepth = 0f;
+    public float tileDepth = 0f, playerDepth = -1f;
     // reference to the map instance created
     public Map map;
     // array of sprites/materials for tiles
@@ -20,6 +20,10 @@ public class Generator : MonoBehaviour {
     public GameObject spikePrefab;
     public GameObject spawnPoint;
     public GameObject exitPoint;
+    // Prefab of player object
+    public GameObject playerPrefab;
+    // Ref of player
+    public GameObject player;
 
     // parent transform for all instantiated objects
     public GameObject prefabParentPrefab;
@@ -35,23 +39,7 @@ public class Generator : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        // If space bar is pressed, generate a new map
-	    if(Input.GetKeyDown(KeyCode.Space))
-        {
-            // If we have a reference here, then we must destroy it
-            if(prefabParent != null)
-            {
-                Destroy(prefabParent.gameObject);
-            }
-            // generate a new matrix
-            map.generate(x,y,difficulty);
-            // create a new parent object and create a temporary reference
-            GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
-            // create a permanent reference to this parent transform
-            prefabParent = refOfPrefabParent.transform;
-            map.printFile("Grid.txt");
-            InstantiateMap(map);
-        }
+
 	}
 
     // Goes through each element in the map matrix and instantiates the gameObjects
@@ -86,6 +74,13 @@ public class Generator : MonoBehaviour {
                     }
                 } else if(map.softCheckFlag(i,j,TILE_T.SPAWN_POINT)){
                     GameObject tileRef = CreateNewTile(spawnPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
+                    // if we have a reference to a player object, destory it and make a new one
+                    if(player != null)
+                    {
+                        Destroy(player.gameObject);
+                    }
+                    Vector3 position = MatrixToWorldSpace(x_origin, y_origin, x_offset, y_offset, i, map.maxY() - j, playerDepth);
+                    player = Instantiate(playerPrefab, position, Quaternion.identity) as GameObject;
                 } else if(map.softCheckFlag(i,j,TILE_T.EXIT_POINT)){
                     GameObject tileRef = CreateNewTile(exitPoint, x_origin, y_origin, x_offset, y_offset, i, j, tileDepth);
                 } else if(map.softCheckFlag(i,j,TILE_T.HAZARD) )
@@ -115,5 +110,29 @@ public class Generator : MonoBehaviour {
     {
         Vector3 position = new Vector3(xOrg + xOffset * (float)x, yOrg + yOffset * (float)y, z);
         return position;
+    }
+
+    // Calls the Generator to create a new map
+    public void Generate()
+    {
+        // If we have a reference here, then we must destroy it
+        if (prefabParent)
+        {
+            Destroy(prefabParent.gameObject);
+        }
+        if (player)
+        {
+            Destroy(player.gameObject);
+        }
+        // generate a new matrix
+        map.generate(x, y, difficulty);
+        // create a new parent object and create a temporary reference
+        GameObject refOfPrefabParent = Instantiate(prefabParentPrefab, transform.position, transform.rotation) as GameObject;
+        // create a permanent reference to this parent transform
+        prefabParent = refOfPrefabParent.transform;
+        map.printFile("Grid.txt");
+        InstantiateMap(map);
+        // after the map has been created, let the player start the game
+        player.GetComponent<Player>().gameOver = false;
     }
 }
