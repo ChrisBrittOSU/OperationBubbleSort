@@ -147,7 +147,7 @@ public class Player : MonoBehaviour {
 
 		if(grounder.isGrounded){
             // On the ground and not bouncing, either idle or walking
-            anim.SetBool("isIdle", Mathf.Abs(walking) > EPSILON);
+            anim.SetBool("isWalking", Mathf.Abs(walking) > EPSILON);
             anim.SetBool("isFalling", false);
             m_rigidBody.gravityScale = NORMAL_GRAV;
 			if(Mathf.Abs(walking) > EPSILON){
@@ -157,7 +157,7 @@ public class Player : MonoBehaviour {
 				m_rigidBody.drag = STILL_DRAG;
 			}
 		} else {
-            anim.SetBool("isIdle", false);
+            anim.SetBool("isWalking", false);
             anim.SetBool("isFalling", true);
 			m_rigidBody.drag = AIR_DRAG;
 			if(lowGravity){
@@ -188,7 +188,7 @@ public class Player : MonoBehaviour {
 	private void fire(){
 		if(!grounder.isGrounded) return;
         isBouncing = true;
-        anim.SetBool("isIdle", false);
+        anim.SetBool("isWalking", false);
         anim.SetBool("isFalling", false);
         anim.SetBool("isBouncing", isBouncing);
 		float vx, vy;
@@ -216,7 +216,7 @@ public class Player : MonoBehaviour {
 		if(!grounder.isGrounded) return;
 
 		m_rigidBody.AddForce(new Vector2(0f, jumpStrength));
-        anim.SetBool("isIdle", false);
+        anim.SetBool("isWalking", false);
         anim.SetBool("isFalling", true);
         anim.SetBool("isBouncing", false);
 		chargeTime = 0f;
