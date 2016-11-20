@@ -612,7 +612,7 @@ Transform:
   m_GameObject: {fileID: 1000012975111866}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 1.8, y: 1.8, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 4000011429072836}
@@ -699,7 +699,7 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012975111866}
   m_UseAutoMass: 1
-  m_Mass: 0.65732455
+  m_Mass: 0.23663682
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -772,15 +772,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adbbb9345f79a4b80a2a86b3a2d0d00f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  strength: 200
+  strength: 75
   chargeTime: 0
-  chargeTimeIncrement: 3
+  jumpStrength: 35
   minTheta: 0
   maxTheta: 6.2831855
-  ascTime: 100
-  fullTime: 20
-  overChargeTime: 40
+  ascTime: 1
+  fullTime: 0.2
+  overChargeTime: 0.4
   overChargePower: 60
+  walkSpeed: 2
+  airWalkSpeed: 0.7
+  EPSILON: 0.001
+  AIR_DRAG: 0.025
+  MOVEMENT_DRAG: 0.05
+  STILL_DRAG: 0.125
+  NORMAL_GRAV: 1
+  LAUNCH_GRAV: 0.333
+  MAX_JUMP_TICK_TIMEOUT: 0.25
+  FORCE_JUMP_FACTOR: 1.5
   grounder: {fileID: 114000012343855198}
 --- !u!212 &212000010533643478
 SpriteRenderer:
